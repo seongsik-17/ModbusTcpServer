@@ -15,6 +15,11 @@
 		//데이터 동시 변경 방지 -> lock 객체
 		private static readonly object _lock = new object();
 
+		static VirtualMemory()
+		{
+			LoadMemory();
+		}
+
 		//메모리 값 파일에서 읽어오는 로직
 		public static void LoadMemory()
 		{

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Sockets;
-using System.Text;
+﻿using System.Net.Sockets;
 
 namespace ModbusServer
 {
@@ -9,7 +6,7 @@ namespace ModbusServer
 	{
 		private Action<string> _interfaceUpdate;
 		private TcpClient _tcpClient;
-		private ModbusParser _parser;
+		//private ModbusParser _parser;
 
 		public ClientHandler(Action<string> interfaceUpdate, TcpClient client)
 		{
@@ -26,22 +23,30 @@ namespace ModbusServer
 		{
 			return DateTime.Now.ToString("yyyy:MM:dd:hh:mm");
 		}
+
 		public void ClientAgent()
 		{
 			NetworkStream stream = _tcpClient.GetStream();
+			ModbusParser parser = new ModbusParser(_interfaceUpdate);
 			byte[] bytes = new byte[256];
-			ushort[] response;
+			byte[] response;
 			//클라이언트 요청사항 처리하는 로직 만들기
 			try
 			{
 				int bytesRead;
+				stream.ReadTimeout = 3000;
 				while ((bytesRead = stream.Read(bytes, 0, bytes.Length)) > 0)
 				{
 					_interfaceUpdate?.Invoke(getTime() + $" 클라이언트 요청 수신!: {_tcpClient.Client.RemoteEndPoint.ToString()}");
 					//파서에서 요청 처리
-					stream.ReadTimeout = 3000;
-					response = _parser.ProcessRequest(bytes, bytesRead);
+					response = parser.ProcessRequest(bytes, bytesRead);
 					//return response;
+					//수신 완료된 response 반환하기
+					//stream.Write();
+					if (response != null && response.Length > 0)
+					{
+						stream.Write(response, 0, response.Length);
+					}
 				}
 			}
 			catch (Exception ex)
@@ -53,7 +58,6 @@ namespace ModbusServer
 				_tcpClient.Dispose();
 			}
 			//return null;
-			
 		}
 	}
 }
