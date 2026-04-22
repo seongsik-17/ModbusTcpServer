@@ -65,7 +65,7 @@ namespace ModbusServer
 			}
 			else if (functionCode == (byte)ModbusFunctionCode.WriteSingleRegister)
 			{
-				VirtualMemory.singleRegisterWrite();
+				VirtualMemory.singleRegisterWrite(startAddress, quantityOrValue);
 			}
 			else if (functionCode == (byte)ModbusFunctionCode.WriteMultipleRegisters)
 			{
@@ -73,18 +73,19 @@ namespace ModbusServer
 			}
 
 			//그냥 돌려주는게 아니라 응답 프레임을 만들어 줘야지
-			Array.Copy(responseBuff, 0, returnBuff, 0, 8);
-			responseBuff[8] = (byte)byteCount;
+			Array.Copy(requestBuff, 0, returnBuff, 0, 8);
+			returnBuff[8] = (byte)byteCount;
 			int dataIndex = 9;
 			for (int i = 0; i < quantityOrValue; i++)
 			{
-				responseBuff[dataIndex] = (byte)(responseBuff[i] >> 8);       // High Byte
-				responseBuff[dataIndex + 1] = (byte)(responseBuff[i] & 0xFF); // Low Byte
+				returnBuff[dataIndex] = (byte)(responseBuff[i] >> 8);       // High Byte
+				returnBuff[dataIndex + 1] = (byte)(responseBuff[i] & 0xFF); // Low Byte
 				dataIndex += 2;
 			}
 			int length = 3 + byteCount;
-			responseBuff[4] = (byte)(length >> 8);
-			responseBuff[5] = (byte)(length & 0xFF);
+
+			returnBuff[4] = (byte)(length >> 8);
+			returnBuff[5] = (byte)(length & 0xFF);
 
 			return returnBuff;
 		}

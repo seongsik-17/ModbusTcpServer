@@ -29,6 +29,8 @@
 				// 1. 고정값 테스트 (설정값 등)
 				_holdingRegisters[0] = 100; // 목표 온도
 				_holdingRegisters[1] = 500; // 회전 속도
+				_inputRegisters[0] = 150; // 현재 온도
+				_inputRegisters[1] = 450; // 현재 회전 속도
 
 				// 2. 일련번호 테스트 (배열 순서 확인용)
 				for (int i = 10; i < 20; i++)
@@ -46,7 +48,7 @@
 			{
 				for (int i = 0; i < quantity; i++)
 				{
-					result[i] = (byte)_inputRegisters[startAddress + i];
+					result[i] = _inputRegisters[startAddress + i];
 				}
 			}
 			return result;
@@ -60,19 +62,30 @@
 			{
 				for (int i = 0; i < quantity; i++)
 				{
-					result[i] = (byte)_holdingRegisters[startAddress + i];
+					result[i] = _holdingRegisters[startAddress + i];
 				}
 			}
 			return result;
 		}
 
-		internal static void singleRegisterWrite()
+		internal static void singleRegisterWrite(ushort address, ushort value)
 		{
 			lock (_lock)
 			{
+
+				/*	들어오는 코드
+					Function code: 0x06 1byte
+					Register address(Hi) 2byte
+					Register address(Lo) 2byte
+					Register value(Hi) 2byte
+					Register value(Lo) 2byte
+
+				 */
 				//값 변경 로직
+				_holdingRegisters[address] = value;
+
 				//변경 이벤트 발생
-				OnChangeEv?.Invoke(0, 0);
+				//OnChangeEv?.Invoke(address, value);
 			}
 			throw new NotImplementedException();
 		}

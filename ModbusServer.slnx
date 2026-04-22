@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="MacahineControl_Simulator/MacahineControl_Simulator.csproj" Id="84062898-22b2-4640-b122-cfe40c63e40a" />
   <Project Path="ModbusServer/ModbusServer.csproj" />
 </Solution>
