@@ -69,7 +69,15 @@ namespace ModbusServer
 			}
 			else if (functionCode == (byte)ModbusFunctionCode.WriteMultipleRegisters)
 			{
-				VirtualMemory.multipleRegisterWrite();
+				ushort[] values = new ushort[256];
+				int indexForMultipleReg = 13; // 데이터는 13번째 바이트부터 시작
+				for (int i = 0; i < quantityOrValue; i++)
+				{
+					values[i] = (ushort)((requestBuff[indexForMultipleReg] << 8) | requestBuff[indexForMultipleReg + 1]);
+					indexForMultipleReg += 2;
+				}
+
+				VirtualMemory.multipleRegisterWrite(startAddress, values);
 			}
 
 			//그냥 돌려주는게 아니라 응답 프레임을 만들어 줘야지

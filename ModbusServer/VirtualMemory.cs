@@ -72,7 +72,6 @@
 		{
 			lock (_lock)
 			{
-
 				/*	들어오는 코드
 					Function code: 0x06 1byte
 					Register address(Hi) 2byte
@@ -81,22 +80,38 @@
 					Register value(Lo) 2byte
 
 				 */
-				//값 변경 로직
-				_holdingRegisters[address] = value;
-
+				if (address < _holdingRegisters.Length)
+				{
+					//값 변경 로직
+					_holdingRegisters[address] = value;
+				}
+				else
+				{
+					//주소 범위 벗어남 -> 예외 처리 구성 필요
+				}
 				//변경 이벤트 발생
 				//OnChangeEv?.Invoke(address, value);
 			}
 			throw new NotImplementedException();
 		}
 
-		internal static void multipleRegisterWrite()
+		internal static void multipleRegisterWrite(ushort address, ushort[] values)
 		{
+			
+
 			lock (_lock)
 			{
-				//값 변경 로직
+				if(address + values.Length > _holdingRegisters.Length)
+				{
+					return;
+				}
+				for (int i = 0; i < values.Length; i++)
+				{
+					_holdingRegisters[address + i] = values[i];
+				}
+
 				//변경 이벤트 발생
-				OnChangeEv?.Invoke(0, 0);
+				//OnChangeEv?.Invoke(0, 0);
 			}
 			throw new NotImplementedException();
 		}

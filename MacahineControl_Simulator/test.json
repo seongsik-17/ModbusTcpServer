@@ -1,0 +1,36 @@
+﻿{
+    "status": 0,
+    "msg": "OK",
+    "data": [
+        {
+            "moveLength": 0.0,
+            "statDate": 20251004,
+            "cutLength": 0.0
+        },
+        {
+            "moveLength": 0.0,
+            "statDate": 20251005,
+            "cutLength": 0.0
+        },
+        {
+            "moveLength": 0.0,
+            "statDate": 20251006,
+            "cutLength": 0.0
+        },
+        {
+            "moveLength": 0.0,
+            "statDate": 20251007,
+            "cutLength": 0.0
+        },
+        {
+            "moveLength": 0.0,
+            "statDate": 20251008,
+            "cutLength": 0.0
+        },
+        {
+            "moveLength": 0.0,
+            "statDate": 20251009,
+            "cutLength": 0.0
+        }
+    ]
+}
