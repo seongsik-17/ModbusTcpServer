@@ -24,12 +24,12 @@ namespace ModbusServer
 			return DateTime.Now.ToString("yyyy:MM:dd:hh:mm");
 		}
 
-		public void ClientAgent()
+		public void ClientAgent()                                                            
 		{
 			NetworkStream stream = _tcpClient.GetStream();
 			ModbusParser parser = new ModbusParser(_interfaceUpdate);
-			byte[] bytes = new byte[256];
-			byte[] response;
+			byte[] bytes = new byte[1024];
+			byte[] response = new byte[1024];
 			//클라이언트 요청사항 처리하는 로직 만들기
 			try
 			{
@@ -52,6 +52,10 @@ namespace ModbusServer
 			catch (Exception ex)
 			{
 				MessageBox.Show(getTime() + $" 클라이언트 처리 중 오류 발생: {ex.Message}");
+			}
+			finally
+			{
+				_interfaceUpdate?.Invoke($"{ getTime()} 클라이언트 연결 종료!: {_tcpClient.Client.RemoteEndPoint.ToString()}");
 				stream.Close();
 				_tcpClient.Close();
 				stream.Dispose();

@@ -92,7 +92,7 @@
 				//변경 이벤트 발생
 				//OnChangeEv?.Invoke(address, value);
 			}
-			throw new NotImplementedException();
+			
 		}
 
 		internal static void multipleRegisterWrite(ushort address, ushort[] values)
@@ -103,7 +103,7 @@
 			{
 				if(address + values.Length > _holdingRegisters.Length)
 				{
-					return;
+					
 				}
 				for (int i = 0; i < values.Length; i++)
 				{
@@ -113,7 +113,7 @@
 				//변경 이벤트 발생
 				//OnChangeEv?.Invoke(0, 0);
 			}
-			throw new NotImplementedException();
+			
 		}
 	}
 }

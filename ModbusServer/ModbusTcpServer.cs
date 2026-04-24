@@ -18,13 +18,16 @@ namespace ModbusServer
 			_updateAction = updateAction;
 			_listener = new TcpListener(IPAddress.Any, _port);
 		}
+
 		private String getTime()
 		{
 			return DateTime.Now.ToString("yyyy:MM:dd:hh:mm");
 		}
-	
+
 		public void Start()
 		{
+			VirtualMemory.LoadMemory();
+
 			Task.Run(() =>
 			{
 				try
@@ -54,30 +57,5 @@ namespace ModbusServer
 				}
 			});
 		}
-		//별도의 클래스로 분리할 예정
-		//private void ClientHandler(TcpClient client)
-		//{
-		//	NetworkStream stream = client.GetStream();
-		//	byte[] bytes = new byte[256];
-		//	//클라이언트 요청사항 처리하는 로직 만들기
-		//	try
-		//	{
-		//		int bytesRead;
-		//		while ((bytesRead = stream.Read(bytes, 0, bytes.Length)) > 0)
-		//		{
-		//			stream.ReadTimeout = 3000;
-		//			_updateAction?.Invoke(getTime() + $" 클라이언트 요청 수신!");
-		//		}
-		//	}
-		//	catch(Exception ex)
-		//	{
-		//		MessageBox.Show(getTime() + $" 클라이언트 처리 중 오류 발생: {ex.Message}");
-		//		stream.Close();
-		//		client.Close();
-		//		stream.Dispose();
-		//		client.Dispose();
-		//	}
-
-		//}
 	}
 }

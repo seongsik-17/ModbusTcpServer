@@ -7,9 +7,6 @@ namespace ModbusServer
 		//폼 갱신 델리게이트
 		private Action<string> _interfaceUpdate;
 
-		//private delegate void funcasf(StringInfo a);
-		//funcasf fff;
-		//private Func<string fgggg, string, string, string> a;
 		public ModbusParser(Action<string> interfaceUpdate)
 		{
 			this._interfaceUpdate = interfaceUpdate;
@@ -23,7 +20,7 @@ namespace ModbusServer
 			ReadInputRegisters = 0x04,
 			WriteSingleCoil = 0x05,
 			WriteSingleRegister = 0x06,
-			WriteMultipleRegisters = 0x16,
+			WriteMultipleRegisters = 0x10,
 			ReadWriteMultipleRegisters = 0x23,
 		}
 
@@ -53,7 +50,7 @@ namespace ModbusServer
 			 Read inupt register: 0x04
 			 Read holding register: 0x03
 			 Write single register: 0x06
-			 Write multiple register: 0x16
+			 Write multiple register: 0x10
 			 */
 			if (functionCode == (byte)ModbusFunctionCode.ReadInputRegisters)
 			{
@@ -66,18 +63,25 @@ namespace ModbusServer
 			else if (functionCode == (byte)ModbusFunctionCode.WriteSingleRegister)
 			{
 				VirtualMemory.singleRegisterWrite(startAddress, quantityOrValue);
+				byte[] writeResponse = requestBuff;
+				return writeResponse;
 			}
 			else if (functionCode == (byte)ModbusFunctionCode.WriteMultipleRegisters)
 			{
-				ushort[] values = new ushort[256];
+				ushort[] values = new ushort[quantityOrValue];
 				int indexForMultipleReg = 13; // 데이터는 13번째 바이트부터 시작
 				for (int i = 0; i < quantityOrValue; i++)
 				{
 					values[i] = (ushort)((requestBuff[indexForMultipleReg] << 8) | requestBuff[indexForMultipleReg + 1]);
 					indexForMultipleReg += 2;
 				}
-
 				VirtualMemory.multipleRegisterWrite(startAddress, values);
+				byte[] writeResponse = requestBuff;
+				return writeResponse;
+			}
+			else
+			{
+				//지원하지 않는 기능코드
 			}
 
 			//그냥 돌려주는게 아니라 응답 프레임을 만들어 줘야지
