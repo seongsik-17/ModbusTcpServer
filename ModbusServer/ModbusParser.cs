@@ -82,6 +82,7 @@ namespace ModbusServer
 			else
 			{
 				//지원하지 않는 기능코드
+				responseBuff[0] = 0xFF; // 예외 응답으로 0xFF 사용
 			}
 
 			//그냥 돌려주는게 아니라 응답 프레임을 만들어 줘야지
