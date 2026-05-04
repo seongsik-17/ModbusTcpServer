@@ -40,7 +40,7 @@ namespace ModbusServer
 
 			int byteCount = quantityOrValue * 2;
 
-			//ModbusFrame frame = new ModbusFrame();
+			
 			ushort[] responseBuff = new ushort[256];
 			//응답 버퍼 조립
 			byte[] returnBuff = new byte[9 + byteCount];
@@ -63,7 +63,8 @@ namespace ModbusServer
 			else if (functionCode == (byte)ModbusFunctionCode.WriteSingleRegister)
 			{
 				VirtualMemory.singleRegisterWrite(startAddress, quantityOrValue);
-				byte[] writeResponse = requestBuff;
+				byte[] writeResponse = new byte[12];
+				Array.Copy(requestBuff, 0, writeResponse, 0, 12);
 				return writeResponse;
 			}
 			else if (functionCode == (byte)ModbusFunctionCode.WriteMultipleRegisters)
@@ -76,7 +77,9 @@ namespace ModbusServer
 					indexForMultipleReg += 2;
 				}
 				VirtualMemory.multipleRegisterWrite(startAddress, values);
-				byte[] writeResponse = requestBuff;
+				//byte[] writeResponse = requestBuff;
+				byte[] writeResponse = new byte[12];
+				Array.Copy(requestBuff, 0, writeResponse, 0, 12);
 				return writeResponse;
 			}
 			else

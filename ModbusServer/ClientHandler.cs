@@ -34,7 +34,7 @@ namespace ModbusServer
 			try
 			{
 				int bytesRead;
-				stream.ReadTimeout = 3000;
+				//stream.ReadTimeout = 3000;
 				while ((bytesRead = stream.Read(bytes, 0, bytes.Length)) > 0)
 				{
 					_interfaceUpdate?.Invoke(getTime() + $" 클라이언트 요청 수신!: {_tcpClient.Client.RemoteEndPoint.ToString()}");
