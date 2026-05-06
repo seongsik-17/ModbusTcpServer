@@ -63,5 +63,19 @@ namespace ModbusServer
 			}
 			//return null;
 		}
+
+		public void Disconnect()
+		{
+			try
+			{
+				_tcpClient.Close();
+				_tcpClient.Dispose();
+				_interfaceUpdate?.Invoke(getTime() + $" 클라이언트 연결 종료!: {_tcpClient.Client.RemoteEndPoint.ToString()}");
+			}
+			catch (Exception ex)
+			{
+				
+			}
+		}
 	}
 }

@@ -10,12 +10,13 @@ namespace ModbusServer
 	{
 		private int _port;
 		private TcpListener _listener;
-		private Action<string> _updateAction;
+		private Action<string> _interfaceUpdate;
+		private List<ClientHandler> clientList = new List<ClientHandler>();
 
-		public ModbusTcpServer(int port, Action<string> updateAction)
+		public ModbusTcpServer(int port, Action<string> interfaceUpdate)
 		{
 			_port = port;
-			_updateAction = updateAction;
+			_interfaceUpdate = interfaceUpdate;
 			_listener = new TcpListener(IPAddress.Any, _port);
 		}
 
@@ -34,7 +35,7 @@ namespace ModbusServer
 				{
 					_listener.Start();
 					//Console.WriteLine("ServerStart!");
-					_updateAction?.Invoke(getTime() + " 서버 시작됨!");
+					_interfaceUpdate?.Invoke(getTime() + " 서버 시작됨!");
 
 					while (true)
 					{
@@ -42,22 +43,45 @@ namespace ModbusServer
 						TcpClient tcpClient = _listener.AcceptTcpClient();
 						// -> 블로킹함수라 연결이 올 때 까지 대기함
 						//Console.WriteLine("클라이언트 연결됨: " + tcpClient.Client.RemoteEndPoint.ToString());
-						_updateAction?.Invoke(getTime() + $" 클라이언트 연결됨: {tcpClient.Client.RemoteEndPoint.ToString()}");
-						ClientHandler clientHandler = new ClientHandler(_updateAction, tcpClient);
+						_interfaceUpdate?.Invoke(getTime() + $" 클라이언트 연결됨: {tcpClient.Client.RemoteEndPoint.ToString()}");
+						ClientHandler clientHandler = new ClientHandler(_interfaceUpdate, tcpClient);
+						clientList.Add(clientHandler);
 						Task.Run(() =>
 						{
 							clientHandler.ClientAgent();
 						});
 					}
 				}
+				catch(SocketException se) when (se.SocketErrorCode == SocketError.Interrupted)
+				{
+					_interfaceUpdate?.Invoke(getTime() + "서버 종료");
+				}
 				catch (Exception ex)
 				{
 					//MessageBox.Show(getTime() + $" 서버 열기 실패!: {ex.Message}");
-					_updateAction?.Invoke(getTime() + $" 서버 열기 실패!: {ex.Message}");
+					_interfaceUpdate?.Invoke(getTime() + $" 서버 열기 실패!: {ex.Message}");
 				}
-
-				
 			});
+		}
+
+		//모든 자원 해제
+		public void Stop()
+		{
+			try
+			{
+				//리스너 중지
+				_listener.Stop();
+				//클라이언트 연결 종료
+				foreach (var client in clientList)
+				{
+					client.Disconnect(); // 클라이언트 연결 종료 메서드 호출
+				}
+			}
+			catch
+			{
+
+			}
+			
 		}
 	}
 }

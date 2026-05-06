@@ -28,21 +28,13 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			logTextBox = new TextBox();
 			clearBtn = new Button();
 			serverStartBtn = new Button();
 			portTextbox = new TextBox();
 			label1 = new Label();
+			serverOffBtn = new Button();
+			logListBox = new ListBox();
 			SuspendLayout();
-			// 
-			// logTextBox
-			// 
-			logTextBox.Location = new Point(12, 12);
-			logTextBox.Multiline = true;
-			logTextBox.Name = "logTextBox";
-			logTextBox.ScrollBars = ScrollBars.Both;
-			logTextBox.Size = new Size(447, 426);
-			logTextBox.TabIndex = 0;
 			// 
 			// clearBtn
 			// 
@@ -52,6 +44,7 @@
 			clearBtn.TabIndex = 1;
 			clearBtn.Text = "클리어";
 			clearBtn.UseVisualStyleBackColor = true;
+			clearBtn.Click += clearBtn_Click;
 			// 
 			// serverStartBtn
 			// 
@@ -79,16 +72,35 @@
 			label1.TabIndex = 3;
 			label1.Text = "PORT";
 			// 
+			// serverOffBtn
+			// 
+			serverOffBtn.Location = new Point(655, 344);
+			serverOffBtn.Name = "serverOffBtn";
+			serverOffBtn.Size = new Size(142, 44);
+			serverOffBtn.TabIndex = 1;
+			serverOffBtn.Text = "서버 종료";
+			serverOffBtn.UseVisualStyleBackColor = true;
+			serverOffBtn.Click += serverOffBtn_Click;
+			// 
+			// logListBox
+			// 
+			logListBox.FormattingEnabled = true;
+			logListBox.Location = new Point(7, 12);
+			logListBox.Name = "logListBox";
+			logListBox.Size = new Size(452, 424);
+			logListBox.TabIndex = 4;
+			// 
 			// Form1
 			// 
 			AutoScaleDimensions = new SizeF(9F, 20F);
 			AutoScaleMode = AutoScaleMode.Font;
 			ClientSize = new Size(800, 450);
+			Controls.Add(logListBox);
 			Controls.Add(label1);
 			Controls.Add(portTextbox);
 			Controls.Add(serverStartBtn);
+			Controls.Add(serverOffBtn);
 			Controls.Add(clearBtn);
-			Controls.Add(logTextBox);
 			Name = "Form1";
 			Text = "Form1";
 			Load += Form1_Load;
@@ -97,11 +109,11 @@
 		}
 
 		#endregion
-
-		private TextBox logTextBox;
 		private Button clearBtn;
 		private Button serverStartBtn;
 		private TextBox portTextbox;
 		private Label label1;
+		private Button serverOffBtn;
+		private ListBox logListBox;
 	}
 }

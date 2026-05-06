@@ -3,15 +3,18 @@ namespace ModbusServer
 	public partial class Form1 : Form
 	{
 		private ModbusTcpServer server;
-		
+
 
 		public Form1()
 		{
 			InitializeComponent();
+			this.Text = "Modbus TCP Server";
 		}
 
 		private void Form1_Load(object sender, EventArgs e)
 		{
+			logListBox.Items.Clear();
+			serverOffBtn.Enabled = false;
 		}
 
 		public void InterfaceUpdate(string logText)
@@ -19,7 +22,7 @@ namespace ModbusServer
 			// UI 업데이트 로직을 여기에 작성하세요.
 			this.Invoke(new Action(() =>
 			{
-				logTextBox.AppendText(logText + Environment.NewLine);
+				logListBox.Items.Add(logText);
 			}));
 		}
 
@@ -49,9 +52,23 @@ namespace ModbusServer
 				MessageBox.Show("포트를 입력해주세요.");
 				return;
 			}
-			server = new ModbusTcpServer(int.Parse(portTextbox.Text), this.InterfaceUpdate);
 			serverStartBtn.Enabled = false;
+			serverOffBtn.Enabled = true;
+			server = new ModbusTcpServer(int.Parse(portTextbox.Text), this.InterfaceUpdate);
 			server.Start();
+		}
+
+		private void clearBtn_Click(object sender, EventArgs e)
+		{
+			//logTextBox.Clear();
+		}
+
+		private void serverOffBtn_Click(object sender, EventArgs e)
+		{
+			//종료 로직 호출
+			server.Stop();
+			serverStartBtn.Enabled = true;
+			serverOffBtn.Enabled = false;
 		}
 	}
 }
