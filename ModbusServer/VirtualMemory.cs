@@ -17,10 +17,10 @@
 
 		static VirtualMemory()
 		{
-			LoadMemory();
+			//LoadMemory();
 		}
 
-		//메모리 값 파일에서 읽어오는 로직
+		//메모리 샘플 데이터
 		public static void LoadMemory()
 		{
 			//가상 메모리 설정

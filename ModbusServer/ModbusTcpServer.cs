@@ -26,7 +26,7 @@ namespace ModbusServer
 
 		public void Start()
 		{
-			VirtualMemory.LoadMemory();
+			//VirtualMemory.LoadMemory();
 
 			Task.Run(() =>
 			{
@@ -35,26 +35,28 @@ namespace ModbusServer
 					_listener.Start();
 					//Console.WriteLine("ServerStart!");
 					_updateAction?.Invoke(getTime() + " 서버 시작됨!");
+
+					while (true)
+					{
+						//연결 대기
+						TcpClient tcpClient = _listener.AcceptTcpClient();
+						// -> 블로킹함수라 연결이 올 때 까지 대기함
+						//Console.WriteLine("클라이언트 연결됨: " + tcpClient.Client.RemoteEndPoint.ToString());
+						_updateAction?.Invoke(getTime() + $" 클라이언트 연결됨: {tcpClient.Client.RemoteEndPoint.ToString()}");
+						ClientHandler clientHandler = new ClientHandler(_updateAction, tcpClient);
+						Task.Run(() =>
+						{
+							clientHandler.ClientAgent();
+						});
+					}
 				}
 				catch (Exception ex)
 				{
-					MessageBox.Show(getTime() + $" 서버 열기 실패!: {ex.Message}");
+					//MessageBox.Show(getTime() + $" 서버 열기 실패!: {ex.Message}");
 					_updateAction?.Invoke(getTime() + $" 서버 열기 실패!: {ex.Message}");
 				}
 
-				while (true)
-				{
-					//연결 대기
-					TcpClient tcpClient = _listener.AcceptTcpClient();
-					// -> 블로킹함수라 연결이 올 때 까지 대기함
-					//Console.WriteLine("클라이언트 연결됨: " + tcpClient.Client.RemoteEndPoint.ToString());
-					_updateAction?.Invoke(getTime() + $" 클라이언트 연결됨: {tcpClient.Client.RemoteEndPoint.ToString()}");
-					ClientHandler clientHandler = new ClientHandler(_updateAction, tcpClient);
-					Task.Run(() =>
-					{
-						clientHandler.ClientAgent();
-					});
-				}
+				
 			});
 		}
 	}
