@@ -73,7 +73,7 @@ namespace ModbusServer
 				_listener.Stop();
 				//클라이언트 연결 종료
 				foreach (var client in clientList)
-				{
+				{  
 					client.Disconnect(); // 클라이언트 연결 종료 메서드 호출
 				}
 			}
