@@ -30,11 +30,11 @@ namespace ModbusServer
 			ModbusParser parser = new ModbusParser(_interfaceUpdate);
 			byte[] bytes = new byte[1024];
 			byte[] response = new byte[1024];
-			//클라이언트 요청사항 처리하는 로직 만들기
+			
 			try
 			{
 				int bytesRead;
-				//stream.ReadTimeout = 3000;
+				stream.ReadTimeout = 10000;
 				while ((bytesRead = stream.Read(bytes, 0, bytes.Length)) > 0)
 				{
 					_interfaceUpdate?.Invoke(getTime() + $" 클라이언트 요청 수신!: {_tcpClient.Client.RemoteEndPoint.ToString()}");
