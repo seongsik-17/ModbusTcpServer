@@ -41,12 +41,17 @@ namespace MacahineControl_Simulator
             }
             else
             {
-                _modbusClient.Disconnect();
-                btnConnect.Text = "Connect";
-                lblStatusValue.Text = "Disconnected";
-                lblStatusValue.ForeColor = Color.Gray;
-                tmrModbus.Stop();
+                DisconnectInternal("Disconnected", Color.Gray);
             }
+        }
+
+        private void DisconnectInternal(string message, Color color)
+        {
+            _modbusClient.Disconnect();
+            btnConnect.Text = "Connect";
+            lblStatusValue.Text = message;
+            lblStatusValue.ForeColor = color;
+            tmrModbus.Stop();
         }
 
         private void tmrSim_Tick(object sender, EventArgs e)
@@ -81,12 +86,11 @@ namespace MacahineControl_Simulator
                 if (configs != null && configs.Length == 5)
                 {
                     _machine.TargetTemperature = configs[0];
-                    _machine.Pid.P = configs[1] / 100.0; // Scale 100
+                    _machine.Pid.P = configs[1] / 100.0;
                     _machine.Pid.I = configs[2] / 100.0;
                     _machine.Pid.D = configs[3] / 100.0;
                     _machine.IsRunning = configs[4] == 1;
 
-                    // Update UI Controls if they are not being edited (simple sync)
                     if (!numTargetTemp.Focused) numTargetTemp.Value = (decimal)_machine.TargetTemperature;
                     if (!numP.Focused) numP.Value = (decimal)_machine.Pid.P;
                     if (!numI.Focused) numI.Value = (decimal)_machine.Pid.I;
@@ -95,7 +99,7 @@ namespace MacahineControl_Simulator
 
                 // 2. Write Status (HR 10~12)
                 ushort[] status = new ushort[3];
-                status[0] = (ushort)(_machine.CurrentTemperature * 10); // Scale 10
+                status[0] = (ushort)(_machine.CurrentTemperature * 10);
                 status[1] = (ushort)_machine.HeaterOutput;
                 status[2] = (ushort)(_machine.IsRunning ? 1 : 0);
 
@@ -104,6 +108,7 @@ namespace MacahineControl_Simulator
             catch (Exception ex)
             {
                 Console.WriteLine($"Modbus Sync Error: {ex.Message}");
+                DisconnectInternal("Connection Lost", Color.Red);
             }
             finally
             {
@@ -116,10 +121,13 @@ namespace MacahineControl_Simulator
             _machine.IsRunning = true;
             UpdateMachineFromUi();
             
-            // 서버의 Run/Stop 레지스터(주소 4, PLC 5번지) 즉시 업데이트
             if (_modbusClient.IsConnected)
             {
-                await _modbusClient.WriteMultipleRegistersAsync(4, new ushort[] { 1 });
+                try {
+                    await _modbusClient.WriteMultipleRegistersAsync(4, new ushort[] { 1 });
+                } catch {
+                    DisconnectInternal("Write Failed", Color.Red);
+                }
             }
         }
 
@@ -127,10 +135,13 @@ namespace MacahineControl_Simulator
         {
             _machine.IsRunning = false;
             
-            // 서버의 Run/Stop 레지스터(주소 4, PLC 5번지) 즉시 업데이트
             if (_modbusClient.IsConnected)
             {
-                await _modbusClient.WriteMultipleRegistersAsync(4, new ushort[] { 0 });
+                try {
+                    await _modbusClient.WriteMultipleRegistersAsync(4, new ushort[] { 0 });
+                } catch {
+                    DisconnectInternal("Write Failed", Color.Red);
+                }
             }
         }
 
