@@ -33,16 +33,7 @@ graph TD
 
 ---
 
-## 📸 Screenshots
 
-| Modbus Server UI | Machine Simulator UI |
-| :---: | :---: |
-| ![Server Screenshot](https://via.placeholder.com/400x250?text=Modbus+Server+UI) | ![Simulator Screenshot](https://via.placeholder.com/400x250?text=Machine+Simulator+UI) |
-| *실시간 클라이언트 접속 및 메모리 모니터링* | *PID 제어 그래프 및 온도 시뮬레이션* |
-
-> **Note:** 위 이미지는 예시입니다. 실제 실행 후 스크린샷을 촬영하여 `docs/images/` 폴더에 넣고 경로를 수정해 주세요.
-
----
 
 ## 🌟 Key Features
 
