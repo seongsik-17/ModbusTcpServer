@@ -91,4 +91,4 @@ graph TD
 - **UI:** WinForms
 
 ---
-*Developed by Gemini CLI Agent & Human Collaboration.*
+
