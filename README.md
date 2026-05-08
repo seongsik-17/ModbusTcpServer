@@ -5,7 +5,7 @@
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
 **스마트 팩토리 데이터 연동 시뮬레이션 솔루션**  
-.NET 10 WinForms 기반의 고성능 Modbus TCP 서버와 PID 제어 로직이 탑재된 기계 제어 시뮬레이터의 결합 프로젝트입니다.
+.NET 10 WinForms 기반의 Modbus TCP 서버와 PID 제어 로직이 탑재된 기계 제어 시뮬레이터의 결합 프로젝트입니다.
 
 ---
 
