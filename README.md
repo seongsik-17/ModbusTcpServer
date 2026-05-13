@@ -73,7 +73,7 @@ graph TD
 ### Installation & Run
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/your-repo/ModbusServer.git
+   git clone https://github.com/seongsik-17/ModbusServer.git
    ```
 2. **Run Server**
    - `ModbusServer.sln` 실행 후 `ModbusServer` 프로젝트 시작.
